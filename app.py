@@ -744,10 +744,6 @@ if attendance_file is not None and edp_file is not None:
                     "Employee No",
                     "Employee Name",
                     "Division",
-                    "Count_Day",
-                    "Leave_Count",
-                    "EDP_Count",
-                    "EDP_Total",
                     "C.In",
                     "C.Out",
                     "Late",
@@ -984,19 +980,19 @@ if attendance_file is not None and edp_file is not None:
             .rename(
                 columns={
                     "Employee_Count":
-                        "Employee Count",
+                        "Total Emp",
 
                     "Average_C_In":
-                        "Average C.In",
+                        "Avg C.In",
 
                     "Average_C_Out":
-                        "Average C.Out",
+                        "Avg C.Out",
 
                     "Average_Late":
-                        "Average Late",
+                        "Avg Late",
 
                     "Average_EDP":
-                        "Average EDP",
+                        "Avg EDP",
 
                     "Average":
                         "Average"
@@ -1331,17 +1327,40 @@ if attendance_file is not None and edp_file is not None:
 
 
                 # ---------------------------------------------
+                # KOLOM YANG DITAMPILKAN DI EXCEL
+                # ---------------------------------------------
+
+                excel_columns = [
+                    "Employee Name",
+                    "C.In",
+                    "C.Out",
+                    "Late",
+                    "EDP"
+                ]
+
+                data_excel = (
+                    data[excel_columns]
+                    .sort_values("Employee Name")
+                    .reset_index(drop=True)
+                )
+
+
+                # ---------------------------------------------
                 # WRITE
                 # ---------------------------------------------
 
-                data.to_excel(
+                data_excel.to_excel(
                     writer,
                     sheet_name=sheet_name,
                     index=False
                 )
 
+                worksheet = writer.sheets[sheet_name]
+                worksheet.column_dimensions["A"].width = 35
+
 
         output.seek(0)
+
 
 
         # ====================================================
@@ -1355,7 +1374,7 @@ if attendance_file is not None and edp_file is not None:
             ),
             data=output,
             file_name=(
-                "Summary_Juli_2026.xlsx"
+                "Summary_2026.xlsx"
             ),
             mime=(
                 "application/vnd.openxmlformats-officedocument"
